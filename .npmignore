@@ -1,0 +1,13 @@
+# Source & config — only ship compiled dist/
+nodes/
+*.ts
+!*.d.ts
+tsconfig.json
+jest.config.js
+.eslintrc.js
+.github/
+.gitignore
+coverage/
+**/*.test.ts
+**/*.test.js
+CONTRIBUTING.md
