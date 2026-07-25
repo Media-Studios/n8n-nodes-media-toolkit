@@ -40,8 +40,6 @@
     "n8n-workflow": "*"
   },
   "devDependencies": {
-    "@n8n/node-cli": "^0.40.3",
-    "n8n-core": "^2.16.1",
     "n8n-workflow": "^2.16.0",
     "@types/jest": "^29.5.0",
     "@types/node": "^20.0.0",
@@ -54,7 +52,7 @@
     "typescript": "^5.1.0"
   },
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20.19.0",
     "npm": ">=9.0.0"
   }
 }
