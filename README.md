@@ -30,6 +30,19 @@ npm install n8n-nodes-media-toolkit
 
 Then restart your n8n instance.
 
+<details>
+<summary><strong>Verify the install in n8n</strong></summary>
+
+<br>
+
+Once installed, n8n reports the package as <strong>Installed · Via npm</strong> with both actions available:
+
+<p align="center">
+  <img src="assets/media-toolkit-installed.png" alt="n8n node details panel showing Media Toolkit installed via npm with two actions" width="420">
+</p>
+
+</details>
+
 ## Operations
 
 ### Extract Video Metadata Specs
