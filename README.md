@@ -3,7 +3,12 @@
 An [n8n](https://n8n.io) community node pack providing media-focused utility operations: video metadata spec calculations and social caption payload generation for TikTok, YouTube, and Instagram.
 
 [![npm version](https://img.shields.io/npm/v/n8n-nodes-media-toolkit.svg)](https://www.npmjs.com/package/n8n-nodes-media-toolkit)
+[![npm downloads](https://img.shields.io/npm/dm/n8n-nodes-media-toolkit.svg)](https://www.npmjs.com/package/n8n-nodes-media-toolkit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+<p align="center">
+  <img src="assets/media-toolkit-demo.png" alt="Media Toolkit node open in the n8n editor showing the Extract Video Metadata Specs parameters" width="820">
+</p>
 
 ## Installation
 
