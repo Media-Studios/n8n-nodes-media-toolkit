@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-media-toolkit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "n8n community node pack for media toolkit operations: video metadata extraction and social caption generation",
   "main": "dist/nodes/index.js",
   "types": "dist/nodes/index.d.ts",
@@ -15,7 +15,9 @@
     "url": "https://github.com/Media-Studios/n8n-nodes-media-toolkit/issues"
   },
   "n8n": {
-    "nodes": ["dist/nodes/MediaToolkit/MediaToolkit.node.js"],
+    "nodes": [
+      "dist/nodes/MediaToolkit/MediaToolkit.node.js"
+    ],
     "credentials": [],
     "community": true
   },
