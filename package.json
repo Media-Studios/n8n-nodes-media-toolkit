@@ -1,7 +1,7 @@
 {
   "name": "n8n-nodes-media-toolkit",
-  "version": "1.0.1",
-  "description": "n8n community node pack for media toolkit operations: video metadata extraction and social caption generation",
+  "version": "1.1.0",
+  "description": "n8n community node for media workflows: video render spec calculations (resolution, bitrate, ffmpeg args) and platform-aware social caption formatting",
   "main": "dist/nodes/index.js",
   "types": "dist/nodes/index.d.ts",
   "license": "MIT",
