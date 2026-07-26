@@ -1,4 +1,4 @@
-import { MediaToolkit } from './MediaToolkit.node';
+import { MediaToolkit, buildRenderArgs } from './MediaToolkit.node';
 import type { IExecuteFunctions, INodeExecutionData } from 'n8n-workflow';
 
 function mockExecute(
@@ -190,5 +190,83 @@ describe('MediaToolkit › Build Social Caption Payload', () => {
 
 		const [output] = await node.execute.call(ctx);
 		expect(output[0].json.caption).toBe('line one\n\nline two');
+	});
+});
+
+describe('MediaToolkit › buildRenderArgs', () => {
+	it('builds image + audio args with -shortest and faststart', () => {
+		const args = buildRenderArgs({
+			mode: 'imageAudio',
+			width: 1080,
+			height: 1920,
+			fps: 30,
+			bitrateMbps: 6,
+			imagePath: '/data/img.png',
+			audioPath: '/data/vo.mp3',
+			outputPath: '/data/out.mp4',
+		});
+		expect(args).toContain('-shortest');
+		expect(args).toContain('-loop');
+		expect(args).toEqual(expect.arrayContaining(['-i', '/data/img.png', '-i', '/data/vo.mp3']));
+		expect(args[args.length - 1]).toBe('/data/out.mp4');
+		expect(args).toContain('6M');
+		expect(args.some((a) => a.includes('scale=1080:1920'))).toBe(true);
+	});
+
+	it('builds image-only args with a fixed duration and no audio input', () => {
+		const args = buildRenderArgs({
+			mode: 'imageAudio',
+			width: 1080,
+			height: 1920,
+			fps: 30,
+			bitrateMbps: 6,
+			imagePath: '/data/img.png',
+			stillDuration: 8,
+			outputPath: '/data/out.mp4',
+		});
+		expect(args).not.toContain('-shortest');
+		expect(args).toEqual(expect.arrayContaining(['-t', '8']));
+		expect(args.filter((a) => a === '-i')).toHaveLength(1);
+	});
+
+	it('builds image-sequence args from a frame pattern', () => {
+		const args = buildRenderArgs({
+			mode: 'imageSequence',
+			width: 1080,
+			height: 1080,
+			fps: 24,
+			bitrateMbps: 5,
+			framePattern: '/data/frames/frame_%04d.png',
+			outputPath: '/data/seq.mp4',
+		});
+		expect(args).toEqual(expect.arrayContaining(['-framerate', '24', '-i', '/data/frames/frame_%04d.png']));
+		expect(args.some((a) => a.includes('scale=1080:1080'))).toBe(true);
+	});
+
+	it('uses a crop filter for cover transcode and a pad filter for contain', () => {
+		const cover = buildRenderArgs({
+			mode: 'transcode',
+			width: 1080,
+			height: 1920,
+			fps: 30,
+			bitrateMbps: 6,
+			inputVideoPath: '/data/in.mp4',
+			fit: 'cover',
+			outputPath: '/data/out.mp4',
+		});
+		expect(cover.some((a) => a.includes('crop=1080:1920'))).toBe(true);
+
+		const contain = buildRenderArgs({
+			mode: 'transcode',
+			width: 1080,
+			height: 1920,
+			fps: 30,
+			bitrateMbps: 6,
+			inputVideoPath: '/data/in.mp4',
+			fit: 'contain',
+			outputPath: '/data/out.mp4',
+		});
+		expect(contain.some((a) => a.includes('pad=1080:1920'))).toBe(true);
+		expect(contain).toContain('+faststart');
 	});
 });

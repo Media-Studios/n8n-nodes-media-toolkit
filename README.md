@@ -1,6 +1,8 @@
 # n8n-nodes-media-toolkit
 
-An [n8n](https://n8n.io) community node for media/content workflows: computes video render specs (resolution, frame count, bitrate, file-size estimate, and `ffmpeg` args) and builds platform-budget-aware social caption payloads for TikTok, YouTube Shorts, and Instagram/Reels.
+An [n8n](https://n8n.io) community node for media/content workflows. It **renders MP4 video with ffmpeg** (image+audio, image sequence, or transcode/resize), computes video render specs (resolution, frame count, bitrate, file-size estimate, `ffmpeg` args), and builds platform-budget-aware social caption payloads for TikTok, YouTube Shorts, and Instagram/Reels.
+
+> **Render Video requires `ffmpeg` on the n8n host.** The spec and caption operations have no external dependency.
 
 [![npm version](https://img.shields.io/npm/v/n8n-nodes-media-toolkit.svg)](https://www.npmjs.com/package/n8n-nodes-media-toolkit)
 [![npm downloads](https://img.shields.io/npm/dm/n8n-nodes-media-toolkit.svg)](https://www.npmjs.com/package/n8n-nodes-media-toolkit)
@@ -44,6 +46,38 @@ Once installed, n8n reports the package as <strong>Installed · Via npm</strong>
 </details>
 
 ## Operations
+
+### Render Video
+
+Renders an MP4 with `ffmpeg`, sized to the target aspect ratio and bitrate from the spec math. Requires `ffmpeg` on the n8n host (set **FFmpeg Path** if it isn't on `PATH`).
+
+**Three modes:**
+
+| Mode | Inputs | What it produces |
+|---|---|---|
+| Image + Audio → Video | Image Path, optional Audio Path, Still Duration | Still looped for the audio (`-shortest`) or a fixed duration |
+| Image Sequence → Video | Frame Pattern (e.g. `frame_%04d.png`) | Numbered frames encoded at the given FPS |
+| Transcode / Resize Video | Input Video Path, Fit Mode | Re-encode to the target aspect — **contain** (letterbox/pad) or **cover** (crop) |
+
+Shared controls: **Aspect Ratio**, **Resolution Scale**, **Frame Rate**, **Target Bitrate** (0 = auto). Output goes to **Output Path**, or leave it blank for a temp file and enable **Return Output as Binary** to hand the MP4 to a downstream upload node.
+
+**Output:**
+
+```json
+{
+  "renderMode": "imageAudio",
+  "outputPath": "/data/out.mp4",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "bitrateMbps": 6.22,
+  "fileSizeBytes": 4821234,
+  "fileSizeMB": 4.82,
+  "ffmpegCommand": "ffmpeg -y -loop 1 -i /data/img.png -i /data/vo.mp3 -vf scale=1080:1920:... -c:v libx264 -b:v 6.22M -c:a aac -shortest -movflags +faststart /data/out.mp4"
+}
+```
+
+Arguments are passed to `ffmpeg` as an array (never a shell string), so file paths can't inject shell commands. Renders are killed after the configurable **Timeout**.
 
 ### Extract Video Metadata Specs
 
